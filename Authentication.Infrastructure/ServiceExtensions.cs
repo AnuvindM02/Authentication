@@ -14,8 +14,20 @@ namespace Authentication.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             //Add DB Context
+            string connectionStringTemplate = configuration.GetConnectionString("DefaultConnection")?? throw new InvalidOperationException("Connection string is not set");
+            string sqlHost = Environment.GetEnvironmentVariable("SQL_HOST") ?? throw new InvalidOperationException("SQL_HOST is not set");
+            string sqlPort = Environment.GetEnvironmentVariable("SQL_PORT")??string.Empty;
+            if(sqlPort!=string.Empty)
+                sqlHost = $"{sqlHost},{sqlPort}";
+
+            string connectionString = connectionStringTemplate
+                .Replace("$SQL_HOST", sqlHost)
+                .Replace("$SQL_DB", Environment.GetEnvironmentVariable("SQL_DB") ?? throw new InvalidOperationException("SQL_DB is not set"))
+                .Replace("$SQL_USER", Environment.GetEnvironmentVariable("SQL_USER") ?? throw new InvalidOperationException("SQL_USER is not set"))
+                .Replace("$SQL_PASSWORD", Environment.GetEnvironmentVariable("SQL_PASSWORD") ?? throw new InvalidOperationException("SQL_PASSWORD is not set"));
+
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(connectionString));
 
             //Repositories
             services.AddScoped<IUserRepository, UserRepository>();
