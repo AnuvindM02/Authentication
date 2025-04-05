@@ -19,7 +19,7 @@ namespace Authentication.Application.Features.Login
                 throw new UnauthorizedAccessException("Invalid credentials");
 
             bool isPasswordValid = _passwordHasher.VerifyPassword(request.Password, user.Password);
-            if (isPasswordValid)
+            if (!isPasswordValid)
                 throw new UnauthorizedAccessException("Invalid credentials");
 
             //Authentication Successful, Generate JWT

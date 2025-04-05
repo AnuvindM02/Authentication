@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Authentication.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -16,6 +16,7 @@ namespace Authentication.API.Controllers
         {
             _mediator = mediator;
         }
+
 
         [HttpPost("register")]
         public async Task<ActionResult<CreateProfileResponse>> Register([FromBody] CreateProfileRequest request, CancellationToken cancellationToken)

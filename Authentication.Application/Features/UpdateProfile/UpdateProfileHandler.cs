@@ -42,8 +42,8 @@ namespace Authentication.Application.Features.UpdateProfile
 
             string hashedPassword = _passwordHasher.HashPassword(request.Password);
 
-            var newUser = _mapper.Map<User>(request);
-            newUser.Password = hashedPassword;
+            _mapper.Map(request, user);
+            user.Password = hashedPassword;
 
             await _userRepository.UpdateAsync(user, cancellationToken);
             return _mapper.Map<UpdateProfileResponse>(user);
