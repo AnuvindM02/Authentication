@@ -8,10 +8,10 @@ namespace Authentication.API.Controllers
     public class JWKSController(IMediator _mediator) : ControllerBase
     {
         [HttpGet("jwks.json")]
-        public async Task<ActionResult<List<GetJWKSResponse>>> GetJWKS(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetJWKS(CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(new GetJWKSRequest(), cancellationToken);
-            return response;
+            return Ok(new {keys = response});
         }
     }
 }
