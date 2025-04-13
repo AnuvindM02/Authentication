@@ -6,14 +6,8 @@ namespace Authentication.API.Controllers
 {
     [Route("api/authentication")]
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController(IMediator _mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        public AuthenticationController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> Login(LoginRequest request, CancellationToken cancellationToken)
         {

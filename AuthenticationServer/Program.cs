@@ -1,7 +1,10 @@
-using Authentication.API.Middlewares;
+﻿using Authentication.API.Middlewares;
 using Authentication.Application;
 using Authentication.Infrastructure;
+using Authentication.Infrastructure.Persistence;
+using Authentication.Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,14 +38,19 @@ builder.Services.AddAuthentication(options =>
                                          // Define a custom IssuerSigningKeyResolver to dynamically retrieve signing keys from the JWKS endpoint
         IssuerSigningKeyResolver = (token, securityToken, kid, parameters) =>
         {
+            var jwtSettings = new JwtSettings();
+            configuration.GetSection("Jwt").Bind(jwtSettings);
             //Console.WriteLine($"Received Token: {token}");
             //Console.WriteLine($"Token Issuer: {securityToken.Issuer}");
             //Console.WriteLine($"Key ID: {kid}");
             //Console.WriteLine($"Validate Lifetime: {parameters.ValidateLifetime}");
             // Initialize an HttpClient instance for fetching the JWKS
-            var httpClient = new HttpClient();
+            var handler = jwtSettings.DisableSslValidation
+        ? new HttpClientHandler { ServerCertificateCustomValidationCallback = (msg, cert, chain, errors) => true }
+        : new HttpClientHandler();
+            var httpClient = new HttpClient(handler);
             // Synchronously fetch the JWKS (JSON Web Key Set) from the specified URL
-            var jwks = httpClient.GetStringAsync($"{builder.Configuration["Jwt:Issuer"]}/.well-known/jwks.json").Result;
+            var jwks = httpClient.GetStringAsync($"{jwtSettings.Issuer}/.well-known/jwks.json").Result;
             // Parse the fetched JWKS into a JsonWebKeySet object
             var keys = new JsonWebKeySet(jwks);
             // Return the collection of JsonWebKey objects for token validation
@@ -52,6 +60,29 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    // Simple retry logic to wait for PostgreSQL
+    var retries = 10;
+    while (retries > 0)
+    {
+        try
+        {
+            db.Database.Migrate();
+            break;
+        }
+        catch (Exception ex)
+        {
+            retries--;
+            Console.WriteLine($"🕐 Waiting for PostgreSQL to be ready... Retries left: {retries}");
+            Thread.Sleep(3000);
+        }
+    }
+}
+
 app.UseExceptionHandlingMiddleware();
 
 // Configure the HTTP request pipeline.

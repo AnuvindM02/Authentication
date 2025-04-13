@@ -6,10 +6,11 @@
             "launchUrl": "swagger",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "SQL_HOST": "localhost\\SQLEXPRESS",
+                "SQL_HOST": "localhost",
                 "SQL_DB": "JwtAuthDB",
-                "SQL_USER": "anuvind",
-                "SQL_PASSWORD": "Anuvind@123"
+                "SQL_USER": "postgres",
+                "SQL_PASSWORD": "admin",
+                "SQL_PORT": "5432"
             },
             "dotnetRunMessages": true,
             "applicationUrl": "http://localhost:5213"
@@ -20,10 +21,11 @@
             "launchUrl": "swagger",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "SQL_HOST": "localhost\\SQLEXPRESS",
+                "SQL_HOST": "localhost",
                 "SQL_DB": "JwtAuthDB",
-                "SQL_USER": "anuvind",
-                "SQL_PASSWORD": "Anuvind@123"
+                "SQL_USER": "postgres",
+                "SQL_PASSWORD": "admin",
+                "SQL_PORT": "5432"
             },
             "dotnetRunMessages": true,
             "applicationUrl": "https://localhost:7172;http://localhost:5213"
@@ -34,10 +36,11 @@
             "launchUrl": "swagger",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "SQL_HOST": "localhost\\SQLEXPRESS",
+                "SQL_HOST": "localhost",
                 "SQL_DB": "JwtAuthDB",
-                "SQL_USER": "anuvind",
-                "SQL_PASSWORD": "Anuvind@123"
+                "SQL_USER": "postgres",
+                "SQL_PASSWORD": "admin",
+                "SQL_PORT": "5432"
             }
         },
         "Container (Dockerfile)": {
@@ -47,11 +50,12 @@
             "environmentVariables": {
                 "ASPNETCORE_HTTPS_PORTS": "8081",
                 "ASPNETCORE_HTTP_PORTS": "8080",
-                "SQL_HOST": "localhost\\SQLEXPRESS",
-                "PORT": "Give it once it is setup",
+                "SQL_HOST": "localhost",
                 "SQL_DB": "JwtAuthDB",
-                "SQL_USER": "anuvind",
-                "SQL_PASSWORD": "Anuvind@123"
+                "SQL_USER": "postgres",
+                "SQL_PASSWORD": "admin",
+                "SQL_PORT": "5432",
+                "Jwt__Issuer": "https://localhost:7001"
             },
             "publishAllPorts": true,
             "useSSL": true
