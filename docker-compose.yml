@@ -1,6 +1,41 @@
 services:
   authentication.api:
-    image: ${DOCKER_REGISTRY-}authenticationapi
+    image: authenticationapi
     build:
       context: .
       dockerfile: AuthenticationServer/Dockerfile
+    environment:
+     - SQL_HOST=postgres
+     - SQL_PORT=5432
+     - SQL_DB=JwtAuthDB
+     - SQL_USER=postgres
+     - SQL_PASSWORD=admin
+     - Jwt__Issuer=https://host.docker.internal:7001
+    ports:
+      - "7000:8080"
+      - "7001:8081"
+    depends_on:
+     - postgres
+    networks:
+     - auth-network
+
+  postgres:
+   image: postgres:16
+   restart: always
+   environment:
+    - POSTGRES_DB=JwtAuthDB
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=admin
+   ports:
+    - "6543:5432"
+   volumes:
+    - pgdata:/var/lib/postgresql/data
+   networks:
+    - auth-network
+
+volumes:
+  pgdata:
+
+networks:
+ auth-network:
+   driver: bridge
