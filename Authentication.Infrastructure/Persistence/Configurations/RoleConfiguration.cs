@@ -38,7 +38,8 @@ namespace Authentication.Infrastructure.Persistence.Configurations
             builder.HasData(
                 new Role { Id = (int)RoleType.Admin, Name = RoleType.Admin.ToString(), Description = $"{RoleType.Admin.ToString()} Role" },
                 new Role { Id = (int)RoleType.User, Name = RoleType.User.ToString(), Description = $"{RoleType.User.ToString()} Role" },
-                new Role { Id = (int)RoleType.Editor, Name = RoleType.Editor.ToString(), Description = $"{RoleType.Editor.ToString()} Role" }
+                new Role { Id = (int)RoleType.Editor, Name = RoleType.Editor.ToString(), Description = $"{RoleType.Editor.ToString()} Role" },
+                new Role { Id = (int)RoleType.Viewer, Name = RoleType.Viewer.ToString(), Description = $"{RoleType.Viewer.ToString()} Role" }
             );
         }
 
