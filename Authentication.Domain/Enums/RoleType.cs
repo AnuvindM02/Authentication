@@ -10,6 +10,7 @@ namespace Authentication.Domain.Enums
     {
         Admin = 1,
         User = 2,
-        Editor = 3
+        Editor = 3,
+        Viewer = 4
     }
 }
