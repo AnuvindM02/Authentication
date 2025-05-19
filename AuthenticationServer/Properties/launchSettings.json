@@ -20,7 +20,7 @@
             "launchBrowser": true,
             "launchUrl": "swagger",
             "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_ENVIRONMENT": "Debug",
                 "SQL_HOST": "localhost",
                 "SQL_DB": "JwtAuthDB",
                 "SQL_USER": "postgres",

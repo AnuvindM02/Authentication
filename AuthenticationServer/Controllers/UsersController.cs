@@ -1,4 +1,5 @@
 ﻿using Authentication.Application.Features.CreateProfile;
+using Authentication.Application.Features.GetAllUsers;
 using Authentication.Application.Features.GetProfile;
 using Authentication.Application.Features.UpdateProfile;
 using MediatR;
@@ -35,7 +36,14 @@ namespace Authentication.API.Controllers
 
         [HttpPut("update")]
         [Authorize]
-        public async Task<ActionResult<UpdateProfileResponse>> UpdateProfile([FromBody]UpdateProfileRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<UpdateProfileResponse>> UpdateProfile([FromBody] UpdateProfileRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpGet("getAll")]
+        public async Task<ActionResult<GetAllUsersResponse>> GetAllUsers([FromQuery] GetAllUsersRequest request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);

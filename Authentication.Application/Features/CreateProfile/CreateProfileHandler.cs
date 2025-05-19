@@ -1,5 +1,7 @@
 ﻿using Authentication.Application.Interfaces.Repositories;
 using Authentication.Application.Interfaces.Services;
+using Authentication.Application.RabbitMq;
+using Authentication.Application.RabbitMq.Models;
 using Authentication.Domain.Entities;
 using Authentication.Domain.Enums;
 using AutoMapper;
@@ -10,7 +12,8 @@ namespace Authentication.Application.Features.CreateProfile
         IRoleRepository _roleRepository,
         IPasswordHasher _passwordHasher,
         IUserRoleRepository _userRoleRepository,
-        IMapper _mapper) : IRequestHandler<CreateProfileRequest, CreateProfileResponse>
+        IMapper _mapper,
+        IRabbitMqPublisher _rabbitMqPublisher) : IRequestHandler<CreateProfileRequest, CreateProfileResponse>
     {
         public async Task<CreateProfileResponse> Handle(CreateProfileRequest request, CancellationToken cancellationToken)
         {
@@ -39,6 +42,12 @@ namespace Authentication.Application.Features.CreateProfile
                 };
                 
                 await _userRoleRepository.AddAsync(newUserRole, cancellationToken);
+
+                //Rabbitmq publish
+                string routingKey = "auth.create.user";
+                var message = new NewUserMessage(newUser.Id);
+
+                _rabbitMqPublisher.Publish(routingKey, message);
             }
 
             return _mapper.Map<CreateProfileResponse>(newUser);

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Authentication.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration_Postgres : Migration
+    public partial class Initial_Migration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -71,7 +71,8 @@ namespace Authentication.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Middlename = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Lastname = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Password = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    Password = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -118,7 +119,8 @@ namespace Authentication.Infrastructure.Migrations
                 {
                     { 1, "Admin Role", "Admin" },
                     { 2, "User Role", "User" },
-                    { 3, "Editor Role", "Editor" }
+                    { 3, "Editor Role", "Editor" },
+                    { 4, "Viewer Role", "Viewer" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -143,6 +145,11 @@ namespace Authentication.Infrastructure.Migrations
                 name: "IX_UserRoles_RoleId",
                 table: "UserRoles",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CreatedAt",
+                table: "Users",
+                column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Unique_Email",

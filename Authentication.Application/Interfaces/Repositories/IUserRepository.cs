@@ -8,5 +8,6 @@ namespace Authentication.Application.Interfaces.Repositories
         Task AddAsync(User user, CancellationToken cancellationToken);
         Task<bool> EmailExistsAsync(string email, int userId, CancellationToken cancellationToken);
         Task UpdateAsync(User user, CancellationToken cancellationToken);
+        Task<List<User>?> GetAllUsers(DateTimeOffset? cursor, int limit, string? search, CancellationToken cancellationToken);
     }
 }

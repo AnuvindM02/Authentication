@@ -1,11 +1,12 @@
 ﻿using Authentication.Application.Features.CreateProfile;
+using Authentication.Application.Features.GetAllUsers;
 using Authentication.Application.Features.GetProfile;
 using Authentication.Application.Features.UpdateProfile;
 using Authentication.Domain.Entities;
 using AutoMapper;
 namespace Authentication.Application
 {
-    public class MappingProfile:Profile
+    public class MappingProfile : Profile
     {
         public MappingProfile()
         {
@@ -43,6 +44,14 @@ namespace Authentication.Application
                 .ForMember(dest => dest.Middlename, opt => opt.MapFrom(src => src.Middlename))
                 .ForMember(dest => dest.Lastname, opt => opt.MapFrom(src => src.Lastname))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<User, GetAllUsersDto>()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.Middlename))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Lastname))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
         }
     }

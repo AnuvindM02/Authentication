@@ -24,7 +24,7 @@ namespace Authentication.Application.Features.Login
 
             //Authentication Successful, Generate JWT
             var token = await _jwtTokenService.GenerateToken(user, client, cancellationToken);
-            return new LoginResponse { RefreshToken = "", Token = token, UserId = user.Id };
+            return new LoginResponse { RefreshToken = "", Token = token, UserId = user.Id, FirstName = user.FirstName, Middlename = user.Middlename,  Lastname = user.Lastname };
         }
 
     }
