@@ -11,9 +11,10 @@ services:
      - SQL_USER=postgres
      - SQL_PASSWORD=admin
      - Jwt__Issuer=https://host.docker.internal:7001
+     - ChatClientIP=http://localhost:4200
+
     ports:
-      - "7000:8080"
-      - "7001:8081"
+      - "7001:8080"
     depends_on:
      - postgres
     networks:

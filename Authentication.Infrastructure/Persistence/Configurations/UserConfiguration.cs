@@ -24,6 +24,12 @@ namespace Authentication.Infrastructure.Persistence.Configurations
                    .HasDatabaseName("IX_Unique_Email")
                    .IsUnique();
 
+            builder.Property(u => u.CreatedAt)
+                    .IsRequired();
+
+            builder.HasIndex(u => u.CreatedAt)
+                    .HasDatabaseName("IX_CreatedAt");
+
             // Property Configurations
             builder.Property(u => u.Email)
                    .IsRequired()

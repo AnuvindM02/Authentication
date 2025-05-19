@@ -10,14 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Authentication.Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(ApplicationDbContext _context) : IUserRepository
     {
-        private readonly ApplicationDbContext _context;
-        public UserRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task AddAsync(User user, CancellationToken cancellationToken)
         {
             _context.Users.Add(user);
@@ -41,6 +35,32 @@ namespace Authentication.Infrastructure.Repositories
         {
             _context.Users.Update(user);
             await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<List<User>?> GetAllUsers(DateTimeOffset? cursor, int limit, string? search, CancellationToken cancellationToken)
+        {
+            var query = _context.Users.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var loweredSearch = search.ToLower();
+
+                query = query.Where(u =>
+                    EF.Functions.ILike(u.FirstName, $"{loweredSearch}%") ||
+                    (u.Lastname != null && EF.Functions.ILike(u.Lastname, $"{loweredSearch}%")) ||
+                    EF.Functions.ILike(u.Email, $"{loweredSearch}%"));
+            }
+
+            if(cursor.HasValue)
+            {
+                query = query.Where(u => u.CreatedAt < cursor.Value);
+            }
+
+            var users = await query.OrderByDescending(u => u.CreatedAt)
+                .Take(limit)
+                .ToListAsync(cancellationToken);
+
+            return users;
         }
     }
 }

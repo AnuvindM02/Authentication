@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Authentication.Application.RabbitMq;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ namespace Authentication.Application
             services.AddFluentValidationAutoValidation()
                     .AddFluentValidationClientsideAdapters();
             services.AddAutoMapper(typeof(MappingProfile));
+            services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
             return services;
         }
     }

@@ -59,6 +59,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowChatClient", policy =>
+    {
+        policy.WithOrigins(builder.Configuration["ChatClientIP"]!)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -91,9 +102,12 @@ if (!app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+if (app.Environment.IsProduction())
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
-
+app.UseCors("AllowChatClient");
 app.UseAuthentication();
 app.UseAuthorization();
 
