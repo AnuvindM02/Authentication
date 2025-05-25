@@ -45,8 +45,7 @@ namespace Authentication.Application.Features.CreateProfile
 
                 //Rabbitmq publish
                 string routingKey = "auth.create.user";
-                var message = new NewUserMessage(newUser.Id);
-
+                var message = _mapper.Map<NewUserMessage>(newUser);
                 _rabbitMqPublisher.Publish(routingKey, message);
             }
 
