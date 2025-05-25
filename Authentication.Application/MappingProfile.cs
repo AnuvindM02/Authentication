@@ -2,6 +2,7 @@
 using Authentication.Application.Features.GetAllUsers;
 using Authentication.Application.Features.GetProfile;
 using Authentication.Application.Features.UpdateProfile;
+using Authentication.Application.RabbitMq.Models;
 using Authentication.Domain.Entities;
 using AutoMapper;
 namespace Authentication.Application
@@ -53,6 +54,13 @@ namespace Authentication.Application
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<User, NewUserMessage>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.Middlename))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Lastname));
         }
     }
 }
