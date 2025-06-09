@@ -8,7 +8,7 @@ namespace Authentication.Application.Features.GetAllUsers
     {
         public async Task<GetAllUsersResponse> Handle(GetAllUsersRequest request, CancellationToken cancellationToken)
         {
-            var usersFromRepository = await _userRepository.GetAllUsers(request.cursor, request.limit, request.search, cancellationToken);
+            var usersFromRepository = await _userRepository.GetAllUsers(request.CurrentUserId??0, request.Cursor, request.Limit, request.Search, cancellationToken);
             var users = _mapper.Map<List<GetAllUsersDto>>(usersFromRepository);
             return new GetAllUsersResponse
             {
