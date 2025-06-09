@@ -1,4 +1,5 @@
-﻿using Authentication.Application.Features.CreateProfile;
+﻿using System.Security.Claims;
+using Authentication.Application.Features.CreateProfile;
 using Authentication.Application.Features.GetAllUsers;
 using Authentication.Application.Features.GetProfile;
 using Authentication.Application.Features.UpdateProfile;
@@ -43,8 +44,14 @@ namespace Authentication.API.Controllers
         }
 
         [HttpGet("getAll")]
+        [Authorize]
         public async Task<ActionResult<GetAllUsersResponse>> GetAllUsers([FromQuery] GetAllUsersRequest request, CancellationToken cancellationToken)
         {
+            if (!int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                return Unauthorized("Invalid or missing user ID in token.");
+            }
+            request.CurrentUserId = userId;
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }

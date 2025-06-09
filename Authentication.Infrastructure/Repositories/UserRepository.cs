@@ -37,9 +37,9 @@ namespace Authentication.Infrastructure.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<List<User>?> GetAllUsers(DateTimeOffset? cursor, int limit, string? search, CancellationToken cancellationToken)
+        public async Task<List<User>?> GetAllUsers(int currentUserId, DateTimeOffset? cursor, int limit, string? search, CancellationToken cancellationToken)
         {
-            var query = _context.Users.AsNoTracking();
+            var query = _context.Users.Where(x => x.Id!=currentUserId).AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
