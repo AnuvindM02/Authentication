@@ -85,7 +85,7 @@ using (var scope = app.Services.CreateScope())
             db.Database.Migrate();
             break;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             retries--;
             Console.WriteLine($"🕐 Waiting for PostgreSQL to be ready... Retries left: {retries}");

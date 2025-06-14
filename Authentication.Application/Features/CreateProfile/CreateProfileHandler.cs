@@ -13,7 +13,9 @@ namespace Authentication.Application.Features.CreateProfile
         IPasswordHasher _passwordHasher,
         IUserRoleRepository _userRoleRepository,
         IMapper _mapper,
-        IRabbitMqPublisher _rabbitMqPublisher) : IRequestHandler<CreateProfileRequest, CreateProfileResponse>
+        IRabbitMqPublisher _rabbitMqPublisher,
+        IClientRepository _clientRepository,
+        IJwtTokenService _jwtTokenService) : IRequestHandler<CreateProfileRequest, CreateProfileResponse>
     {
         public async Task<CreateProfileResponse> Handle(CreateProfileRequest request, CancellationToken cancellationToken)
         {
@@ -49,7 +51,14 @@ namespace Authentication.Application.Features.CreateProfile
                 _rabbitMqPublisher.Publish(routingKey, message);
             }
 
-            return _mapper.Map<CreateProfileResponse>(newUser);
+            //Get the token with created user
+            var client = await _clientRepository.GetFirst(cancellationToken)??
+                throw new KeyNotFoundException("No client configured");
+            var token = await _jwtTokenService.GenerateToken(newUser, client, cancellationToken);
+
+            var response = _mapper.Map<CreateProfileResponse>(newUser);
+            response.Token = token;
+            return response;
         }
     }
 }

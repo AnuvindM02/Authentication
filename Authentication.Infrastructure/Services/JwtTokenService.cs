@@ -14,8 +14,7 @@ namespace Authentication.Infrastructure.Services
     {
         public async Task<string> GenerateToken(User user, Client client, CancellationToken cancellationToken)
         {
-            var signingKey = await _signingKeyRepository.GetActiveSigningKey(cancellationToken);
-            if (signingKey == null)
+            var signingKey = await _signingKeyRepository.GetActiveSigningKey(cancellationToken) ??
                 throw new Exception("No active signing key available");
 
             var privateKeyBytes = Convert.FromBase64String(signingKey.PrivateKey);
@@ -32,11 +31,11 @@ namespace Authentication.Infrastructure.Services
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.FirstName),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
+                new (JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new (ClaimTypes.Name, user.FirstName),
+                new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new (ClaimTypes.Email, user.Email)
             };
 
             foreach (var userRole in user.UserRoles)
