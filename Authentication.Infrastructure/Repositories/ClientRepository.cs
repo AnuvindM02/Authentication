@@ -4,16 +4,15 @@ using Authentication.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 namespace Authentication.Infrastructure.Repositories
 {
-    public class ClientRepository : IClientRepository
+    public class ClientRepository(ApplicationDbContext _context) : IClientRepository
     {
-        private readonly ApplicationDbContext _context;
-        public ClientRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
         public async Task<Client?> GetByClientIdAsync(string clientId, CancellationToken cancellationToken)
         {
             return await _context.Clients.FirstOrDefaultAsync(c => c.ClientId == clientId, cancellationToken);
+        }
+        public async Task<Client?> GetFirst(CancellationToken cancellationToken)
+        {
+            return await _context.Clients.FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

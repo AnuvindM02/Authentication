@@ -10,12 +10,10 @@ namespace Authentication.Application.Features.Login
     {
         public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
         {
-            var client = await _clientRepository.GetByClientIdAsync(request.ClientId, cancellationToken);
-            if (client == null)
+            var client = await _clientRepository.GetByClientIdAsync(request.ClientId, cancellationToken)??
                 throw new UnauthorizedAccessException("Invalid client credentials");
 
-            var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
-            if (user == null)
+            var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken)??
                 throw new UnauthorizedAccessException("Invalid credentials");
 
             bool isPasswordValid = _passwordHasher.VerifyPassword(request.Password, user.Password);
